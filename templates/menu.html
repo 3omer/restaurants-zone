@@ -1,0 +1,15 @@
+<!-- dependencies -->
+<!-- menu_items list -->
+<!-- restaurant name -->
+<h3>{{name}}</h3>
+
+{% with messages = get_flashed_messages() %}
+{% for m in messages %} 
+<h4>{{m}}</h3>
+{%endfor%}
+{%endwith%}
+<ul>
+    {% for item in menu_items  %}
+        <li>{{item.name}} <br> {{item.description}} <br> {{item.course}} <br> {{item.price}}</li>
+    {%endfor%}
+</ul>

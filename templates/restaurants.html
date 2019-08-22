@@ -1,0 +1,13 @@
+<!-- dependencies -->
+
+<h1>Restaurants:</h1>
+{% with messages = get_flashed_messages() %}
+{% for m in messages %} 
+<h4>{{m}}</h3>
+{% endfor %}
+{% endwith %}
+<ul>
+{% for r in restaurants %}
+<li><a href="{{url_for('restaurantMenu', restaurant_id=r.id)}}">{{r.name}}</a></li>
+{%endfor%}
+</ul>

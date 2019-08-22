@@ -1,0 +1,12 @@
+<!-- restaurant name -->
+
+{% with messages = get_flashed_messages() %}
+{% for m in messages %} 
+<h3>{{m}}</h3>
+{%endfor %}
+{% endwith %}
+<form  method="post">
+    <input type="text" name="name" value="{{name}}">
+    <input type="submit" name="submit" id="">
+
+</form>
