@@ -59,7 +59,7 @@ def deleteRestaurant(restaurant_id):
 def restaurantMenu(restaurant_id):
     restaurant = fakeDB.restaurant
     menu_items = fakeDB.items
-    return render_template('menu.html', name=restaurant['name'], menu_items=menu_items )
+    return render_template('menu.html', restaurant=restaurant, menu_items=menu_items )
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
