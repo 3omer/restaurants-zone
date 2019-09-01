@@ -40,7 +40,7 @@
     <h4>{{m}}</h3>
         {% endfor %}
         {% endwith %}
-{% endblock %}
+        {% endblock %}
         {% block content %}{% endblock %}
 
         <footer>
@@ -50,5 +50,113 @@
         <script src="{{url_for('static', filename='js/jquery-3.4.0.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
 </body>
+
+
+
+<!-- new restaurant form modal -->
+<div class="modal fade" id="newRestaurantModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Restaurant</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="new-restaurant" method="GET">
+                    <div class="form-group">
+                        <label for="nameInput">Restaurant Name</label>
+                        <input type="text" class="form-control" id="nameInput" name="name"
+                            placeholder="Enter restaurant name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- new Menu Item Form modal -->
+<div class="modal fade" id="newMenuItemModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white-50">
+                <h5 class="modal-title">New Menu Item</h5>
+                <button type="button" class="close  text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="new-menu-item" method="POST">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="nameInput" name="name"
+                            placeholder="Enter restaurant name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="courseInput" name="course"
+                            placeholder="Item course eg. Entree, Appetier ..">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">$</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="15" aria-label="price"
+                            aria-describedby="basic-addon1">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" name="description" id="descriptionInput"
+                            placeholder="a brief description of the item." rows="3"></textarea>
+                    </div>
+                    <div class="mt-2 p-2 border-top">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- delete restaurant or menu-item modal form -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="delete-form" action="" method="POST">
+                    <div class="message">
+                        Are you sure you want to delete restaurant.name ?
+                    </div>
+                    <div class="mt-2 p-2 border-top">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var btn = $(event.relatedTarget);
+            var name = btn.data('name');
+            var action = btn.data('action');
+            var modal = $(this);
+            var form = modal.find('#delete-form');
+            form.attr('action', action);
+            modal.find('.message').text('Are you sure you want to delete ' + name + '?');
+        })
+    </script>
+</div>
 
 </html>
