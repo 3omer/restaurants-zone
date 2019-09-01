@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="{{url_for('static', filename='js/jquery-3.4.0.min.js')}}"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
     <title>Restaurants-Zone</title>
 </head>
@@ -47,7 +48,6 @@
 
         </footer>
         <script src="{{url_for('static', filename='js/holder.min.js')}}"></script>
-        <script src="{{url_for('static', filename='js/jquery-3.4.0.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
 </body>
 
@@ -81,50 +81,12 @@
 </div>
 
 
-<!-- new Menu Item Form modal -->
-<div class="modal fade" id="newMenuItemModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white-50">
-                <h5 class="modal-title">New Menu Item</h5>
-                <button type="button" class="close  text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="new-menu-item" method="POST">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="nameInput" name="name"
-                            placeholder="Enter restaurant name">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="courseInput" name="course"
-                            placeholder="Item course eg. Entree, Appetier ..">
-                    </div>
-                    <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">$</span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="15" aria-label="price"
-                            aria-describedby="basic-addon1">
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" name="description" id="descriptionInput"
-                            placeholder="a brief description of the item." rows="3"></textarea>
-                    </div>
-                    <div class="mt-2 p-2 border-top">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- new/edit Menu Item Form modal -->
+
 
 
 <!-- delete restaurant or menu-item modal form -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -134,7 +96,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="delete-form" action="" method="POST">
+                <form id="deleteItemForm" action="" method="POST">
                     <div class="message">
                         Are you sure you want to delete restaurant.name ?
                     </div>
@@ -147,12 +109,12 @@
         </div>
     </div>
     <script>
-        $('#deleteModal').on('show.bs.modal', function (event) {
+        $('#deleteItemModal').on('show.bs.modal', function (event) {
             var btn = $(event.relatedTarget);
             var name = btn.data('name');
             var action = btn.data('action');
             var modal = $(this);
-            var form = modal.find('#delete-form');
+            var form = modal.find('#deleteItemForm');
             form.attr('action', action);
             modal.find('.message').text('Are you sure you want to delete ' + name + '?');
         })

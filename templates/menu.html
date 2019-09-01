@@ -17,7 +17,7 @@
         </div>
 
     </div>
-    <div class="menu-list card p-3 my-3">
+    <div class="menu-list bg-light card p-3 my-3">
         <h5 class="border-bottom pb-2">Menu</h5>
         {% for item in menu_items %}
         <div class="menu-item d-flex justify-content-between align-items-center border-bottom pt-2 w-75 m-auto">
@@ -27,24 +27,23 @@
                         class="img-fluid mr-2 rounded" style="width: 32px; height: 32px;" data-holder-rendered="true">
                 </div>
                 <div class="item-body">
-                    <h6 class="mb-0">{{item.name}}</h6>
-                    <div><small>{{item.description}}</small></div>
-                    <strong class="badge badge-dark">{{item.course}}</strong>
+                    <h6 class="mb-0" id="itemName">{{item.name}}</h6>
+                    <div class="small" id="itemDescription">{{item.description}}</div>
+                    <strong class="badge badge-dark" id="itemCourse">{{item.course}}</strong>
                 </div>
             </div>
             <div class="ml-1 p-2">
-                <h4 class="text-center bg-info rounded text-white">{{item.price}}</h3>
+                <h4 class="text-center bg-info rounded text-white" id="itemPrice">{{item.price}}</h3>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-secondary"
-                            href="{{url_for('editMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}">
+                        <button class="btn btn-secondary" data-toggle="modal" data-target="#menuItemModal"
+                            data-action="{{url_for('editMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}" data-title="Edit {{item.name}}">
                             <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22">
                                 <path fill="#ffffff90"
                                     d="M1.204 14.796v3h3l8-8-3-3-8 8zm3 2h-2v-2h1v1h1v1zm10.3-9.3l-1.3 1.3-3-3 1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z">
                                 </path>
-                            </svg>
+                            </svg>edit
                         </button>
-
-                        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteItemModal"
                             data-name="{{item.name}}"
                             data-action="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}">
                             <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22">
@@ -58,4 +57,67 @@
         {% endfor %}
     </div>
 </section>
+
+<!-- modals  -->
+<!-- <button class="btn btn-secondary" data-toggle="modal" data-target="#menuItemModal" data-action="editing link" data-title="">edit</button> -->
+<div class="modal fade" id="menuItemModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white-50">
+                    <h5 class="modal-title">data-title</h5>
+                    <button type="button" class="close  text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="menuItemForm" method="POST">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="nameInput" name="name"
+                                placeholder="Enter restaurant name" value="">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="courseInput" name="course"
+                                placeholder="Item course eg. Entree, Appetier .." value="">
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">$</span>
+                            </div>
+                            <input type="text" class="form-control" id="priceInput" placeholder="15" value="" aria-label="price"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" name="description" id="descriptionInput"
+                                placeholder="a brief description of the item." rows="3"></textarea>
+                        </div>
+                        <div class="mt-2 p-2 border-top">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#menuItemModal').on('show.bs.modal', function (event) {
+                // get the modal title from the triggering button
+                var btn = $(event.relatedTarget);
+                var modal = $(this);
+                modal.find('.modal-title').text(btn.data('title'));
+                // get item details from the DOM
+                var name = $('#itemName').text();
+                var description = $('#itemDescription').text();
+                var price = $('#itemPrice').text();
+                var course = $('#itemCourse').text();
+                // populate the form with data
+                var form = modal.find('#menuItemForm');
+                form.attr('action', btn.data('action'));
+                form.find('#nameInput').attr('value', name);
+                form.find('#descriptionInput').text( description);
+                form.find('#courseInput').attr('value', course);
+                form.find('#priceInput').attr('value', price);
+                form.find('[type=submit]').text('Save Changes');
+            })
+        </script>
+    </div>
 {% endblock %}
