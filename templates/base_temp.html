@@ -35,20 +35,25 @@
             </div>
         </nav>
     </header>
+    
+    {% block content %}
     {% block fb %}
-    {% with messages = get_flashed_messages() %}
-    {% for m in messages %}
-    <h4>{{m}}</h3>
-        {% endfor %}
-        {% endwith %}
-        {% endblock %}
-        {% block content %}{% endblock %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, m in messages %}
+    <div class="alert alert-{{category}} mt-1">
+        <span>{{m}}</span>
+    </div>
+    {% endfor %}
+    {% endwith %}
+    {% endblock %}
 
-        <footer>
+    {% endblock %}
 
-        </footer>
-        <script src="{{url_for('static', filename='js/holder.min.js')}}"></script>
-        <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <footer>
+
+    </footer>
+    <script src="{{url_for('static', filename='js/holder.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
 </body>
 
 
