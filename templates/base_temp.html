@@ -12,15 +12,15 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary mb-2">
-            <a class="navbar-brand" href="#">Navbar</a>
+        <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Restaurants-Zone</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
                 aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <!-- <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="nav-item active">
                         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                     </li>
@@ -31,11 +31,11 @@
                 <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search">
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                </form> -->
             </div>
         </nav>
     </header>
-    
+
     {% block content %}
     {% block fb %}
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -58,32 +58,6 @@
 
 
 
-<!-- new restaurant form modal -->
-<div class="modal fade" id="newRestaurantModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Restaurant</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="new-restaurant" method="GET">
-                    <div class="form-group">
-                        <label for="nameInput">Restaurant Name</label>
-                        <input type="text" class="form-control" id="nameInput" name="name"
-                            placeholder="Enter restaurant name">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <!-- new/edit Menu Item Form modal -->
@@ -114,15 +88,7 @@
         </div>
     </div>
     <script>
-        $('#deleteItemModal').on('show.bs.modal', function (event) {
-            var btn = $(event.relatedTarget);
-            var name = btn.data('name');
-            var action = btn.data('action');
-            var modal = $(this);
-            var form = modal.find('#deleteItemForm');
-            form.attr('action', action);
-            modal.find('.message').text('Are you sure you want to delete ' + name + '?');
-        })
+
     </script>
 </div>
 
