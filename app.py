@@ -18,7 +18,7 @@ session = DBSession()
 @app.route('/')
 @app.route('/restaurants')
 def showRestaurants():
-    restaurants = fakeDB.get_all_restaurants()
+    restaurants = fakeDB.restaurants
     return render_template('restaurants.html', restaurants=restaurants)
 
 

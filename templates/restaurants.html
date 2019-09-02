@@ -32,10 +32,12 @@
                         <h5 class="card-title badge badge-dark">{{r.name}}</h5>
                         <p class="card-text">has <span class="badge badge-info badge-pill">24</span> menu item</p>
                     </div>
-                    <div class="card-footer d-flex justify-content-between">
-                            <a href="{{url_for('restaurantMenu', restaurant_id=r.id)}}"
-                            class="btn btn-sm btn-primary w-50">Go</a>
-                        <div class="btn-group btn-group-sm">
+                    <div class="card-footer d-flex flex-column flex-sm-row justify-content-between">
+                        <a class="btn btn-sm btn-primary px-4"
+                            href="{{url_for('restaurantMenu', restaurant_id=r.id)}}">
+                            Go
+                        </a>
+                        <div class="btn-group btn-group-sm mt-1 mt-sm-0">
                             <button class="btn btn-secondary" id="editRestaurant" data-toggle="modal"
                                 data-target="#restaurantModal"
                                 data-action="{{url_for('editRestaurant', restaurant_id=r.id)}}"
