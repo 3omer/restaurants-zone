@@ -27,7 +27,7 @@ def newRestaurant():
     if request.method == 'POST':
         new_name = request.form['name']
         fakeDB.create_restaurant(new_name)
-        flash(' restaurant %s is created !' % new_name)
+        flash(' restaurant %s is created !' % new_name, 'success')
         return redirect(url_for('showRestaurants'))
     return render_template('new_restaurant.html')
 
@@ -38,7 +38,7 @@ def editRestaurant(restaurant_id):
     if request.method == 'POST':
         new_name = request.form['name']
         fakeDB.update_restaurant(restaurant_id, new_name)
-        flash('change saved !')
+        flash('change saved !', 'success')
         return redirect(url_for('showRestaurants'))
     return render_template('edit_restaurant.html', name=restaurant.get('name'))
 
@@ -49,7 +49,7 @@ def deleteRestaurant(restaurant_id):
     menu_length = 15
     if request.method == 'POST':
         fakeDB.delete_restaurant(restaurant_id)
-        flash('%s deleted' % restaurant['name'])
+        flash('%s deleted' % restaurant['name'], 'success')
         return redirect(url_for('showRestaurants'))
     return render_template('delete_restaurant.html', name=restaurant['name'], menu_length=menu_length)
 
@@ -68,7 +68,7 @@ def newMenuItem(restaurant_id):
         # validate input
         # insert data
         # flash a message
-        flash('new menu item is added !')
+        flash('new menu item is added !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template('new_menu_item.html')
 
@@ -80,7 +80,7 @@ def editMenuItem(restaurant_id, item_id):
         #validate input
         #update item
         # flash
-        flash('menu item updated !')
+        flash('menu item updated !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template('edit_menu_item.html', item=item)
 
@@ -92,7 +92,7 @@ def deleteMenuItem(restaurant_id, item_id):
     if request.method == 'POST':
         # delete menu item
         # flash user
-        flash('menu item deleted !')
+        flash('menu item deleted !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template('delete_menu_item.html', restaurant_name=restaurant['name'], item_name=item['name'])
 
