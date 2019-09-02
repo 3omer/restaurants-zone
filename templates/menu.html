@@ -21,7 +21,7 @@
     <div class="menu-list bg-light card my-3" >
         <div class="card-header d-flex  justify-content-between align-items-center">
             <h5 class="mb-0">Menu</h5>
-            <button class="btn btn-primary rounded-pill" id="addItem" data-toggle="modal" data-target="#menuItemModal"
+            <button class="btn btn-primary btn-sm rounded-pill" id="addItem" data-toggle="modal" data-target="#menuItemModal"
                 data-action="{{url_for('newMenuItem', restaurant_id=restaurant.id)}}" data-title="Create new Item">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22" width="20" height="20">
@@ -62,7 +62,7 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteItemModal"
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
                                 data-name="{{item.name}}"
                                 data-action="{{url_for('deleteMenuItem', restaurant_id=restaurant.id, item_id=item.id)}}">
                                 <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22">
@@ -79,6 +79,7 @@
 </section>
 
 <!-- modals  -->
+<!-- edit/new restaurant -->
 <!-- <button class="btn btn-secondary" data-toggle="modal" data-target="#menuItemModal" data-action="editing link" data-title="">edit</button> -->
 <div class="modal fade" id="menuItemModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">

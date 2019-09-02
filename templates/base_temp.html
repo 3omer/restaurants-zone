@@ -65,7 +65,7 @@
 
 
 <!-- delete restaurant or menu-item modal form -->
-<div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -75,9 +75,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="deleteItemForm" action="" method="POST">
+                <form id="deleteForm" action="" method="POST">
                     <div class="message">
-                        Are you sure you want to delete restaurant.name ?
+                        Are you sure ?
                     </div>
                     <div class="mt-2 p-2 border-top">
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -88,7 +88,15 @@
         </div>
     </div>
     <script>
-
+       $('#deleteModal').on('show.bs.modal', function (event) {
+            var btn = $(event.relatedTarget);
+            var name = btn.data('name');
+            var action = btn.data('action');
+            var modal = $(this);
+            var form = modal.find('#deleteForm');
+            form.attr('action', action);
+            modal.find('.message').text('Are you sure you want to delete ' + name + '?');
+        })
     </script>
 </div>
 
