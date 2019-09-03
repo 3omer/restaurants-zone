@@ -62,9 +62,9 @@ def deleteRestaurant(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>')
 @app.route('/restaurant/<int:restaurant_id>/menu')
 def restaurantMenu(restaurant_id):
-    restaurant = fakeDB.restaurant
-    menu_items = fakeDB.items
-    return render_template('menu.html', restaurant=restaurant, menu_items=menu_items )
+    restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
+    menu_items = session.query(MenuItem).filter(MenuItem.resturant == restaurant)
+    return render_template('menu.html', restaurant=restaurant, menu_items=menu_items)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
