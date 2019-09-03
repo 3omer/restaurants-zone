@@ -36,10 +36,12 @@ def newRestaurant():
 
 @app.route('/restaurant/<int:restaurant_id>/edit', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
-    restaurant = fakeDB.get_restaurant(restaurant_id)
+    restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     if request.method == 'POST':
         new_name = request.form['name']
-        fakeDB.update_restaurant(restaurant_id, new_name)
+        restaurant.name = new_name
+        session.add(restaurant)
+        session.commit()
         flash('change saved !', 'success')
         return redirect(url_for('showRestaurants'))
     return render_template('edit_restaurant.html', name=restaurant.get('name'))
