@@ -70,8 +70,22 @@ def restaurantMenu(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
     if request.method == 'POST':
+        # get data
+        name = request.form['name']
+        description = request.form['description']
+        course = request.form['course']
+        price = request.form['price']
+        restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
         # validate input
+        # TODO
         # insert data
+        item = MenuItem(name=name,
+                        description=description,
+                        course=course,
+                        price=price,
+                        resturant=restaurant)
+        session.add(item)
+        session.commit()
         # flash a message
         flash('new menu item is added !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
