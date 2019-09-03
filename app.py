@@ -26,7 +26,9 @@ def showRestaurants():
 def newRestaurant():
     if request.method == 'POST':
         new_name = request.form['name']
-        fakeDB.create_restaurant(new_name)
+        new_restaurant = Restaurant(name=new_name)
+        session.add(new_restaurant)
+        session.commit()
         flash(' restaurant %s is created !' % new_name, 'success')
         return redirect(url_for('showRestaurants'))
     return render_template('new_restaurant.html')
