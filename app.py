@@ -119,14 +119,22 @@ def editMenuItem(restaurant_id, item_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteMenuItem(restaurant_id, item_id):
-    item = fakeDB.item
-    restaurant = fakeDB.restaurant
+    restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
+    item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
     if request.method == 'POST':
         # delete menu item
+        session.delete(item)
+        session.commit()
         # flash user
         flash('menu item deleted !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template('delete_menu_item.html', restaurant_name=restaurant['name'], item_name=item['name'])
-
-
+####
+# TODO : 
+# use one query when possible etc : 
+# item = session.query(MenuItem).filter(and_(MenuItem.id == id, Restaurant.id == id)).one_or_none()
+# or :
+# session.query(MenuItem).with_parent(restaurant, 'restaurant_id')
+# theres is more check the docs
+####
 app.secret_key = 'ulvuelhk'
