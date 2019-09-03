@@ -49,13 +49,14 @@ def editRestaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/delete', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
-    restaurant = fakeDB.get_restaurant(restaurant_id)
-    menu_length = 15
+    restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
+    # menu_length = session.query(MenuItem).filter(MenuItem.restaurant == restaurant).count()
     if request.method == 'POST':
-        fakeDB.delete_restaurant(restaurant_id)
-        flash('%s deleted' % restaurant['name'], 'success')
+        session.delete(restaurant)
+        session.commit()
+        flash('%s deleted' % restaurant.name, 'success')
         return redirect(url_for('showRestaurants'))
-    return render_template('delete_restaurant.html', name=restaurant['name'], menu_length=menu_length)
+    return render_template('delete_restaurant.html', name=restaurant.name, menu_length=15)
 
 
 @app.route('/restaurant/<int:restaurant_id>')
