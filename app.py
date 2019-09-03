@@ -94,11 +94,24 @@ def newMenuItem(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:item_id>/edit', methods=['GET', 'POST'])
 def editMenuItem(restaurant_id, item_id):
-    item = fakeDB.item
+    item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
+    restaurant = session.query(Restaurant).filter(Restaurant.id ==  restaurant_id).one_or_none()
     if request.method == 'POST':
-        #validate input
-        #update item
-        # flash
+        # get data
+        name = request.form['name']
+        description = request.form['description']
+        course = request.form['course']
+        price = request.form['price']
+        restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
+        # validate input
+        # TODO
+        # insert data
+        item.name = name
+        item.description = description
+        item.course = course
+        item.price = price
+        session.add(item)
+        session.commit()
         flash('menu item updated !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template('edit_menu_item.html', item=item)
