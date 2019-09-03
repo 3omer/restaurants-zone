@@ -2,7 +2,7 @@ from flask import Flask,request, render_template, url_for, redirect,flash, jsoni
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
-import fakeDB
+
 
 app = Flask(__name__)
 
@@ -18,7 +18,7 @@ session = DBSession()
 @app.route('/')
 @app.route('/restaurants')
 def showRestaurants():
-    restaurants = fakeDB.restaurants
+    restaurants = session.query(Restaurant).all()
     return render_template('restaurants.html', restaurants=restaurants)
 
 
