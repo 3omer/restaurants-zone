@@ -1,10 +1,11 @@
 from flask import Flask,request, render_template, url_for, redirect,flash, jsonify
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
 
 
 app = Flask(__name__)
+app.secret_key = 'ulvuelhk'
 
 # database configuration
 engine = create_engine('sqlite:///restaurantmenu.db', connect_args={'check_same_thread': False})
@@ -129,6 +130,32 @@ def deleteMenuItem(restaurant_id, item_id):
         flash('menu item deleted !', 'success')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     return render_template('delete_menu_item.html', restaurant_name=restaurant['name'], item_name=item['name'])
+
+
+#####
+# here goes the api methods
+# even though its really bad structure
+# so I should seprate the code TODO
+####
+@app.route('/restaurants/JSON')
+def restaurantJSON():
+    restaurants = session.query(Restaurant).all()
+    return jsonify(restaurants=[r.serialize for r in restaurants])
+
+
+@app.route('/restaurant/<int:restaurant_id>/menu/JSON')
+def restaurantMenuJSON(restaurant_id):
+    menu_items = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id).all()
+    return jsonify(MenuItems=[item.serialize for item in menu_items])
+
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:item_id>/JSON')
+def menuItemJSON(restaurant_id, item_id):
+    item = session.query(MenuItem)\
+                .filter(and_(MenuItem.id == item_id, MenuItem.restaurant_id == restaurant_id))\
+                .one_or_none()
+    return jsonify(MenuItem=item.serialize if item else {})
+
+
 ####
 # TODO : 
 # use one query when possible etc : 
@@ -137,4 +164,3 @@ def deleteMenuItem(restaurant_id, item_id):
 # session.query(MenuItem).with_parent(restaurant, 'restaurant_id')
 # theres is more check the docs
 ####
-app.secret_key = 'ulvuelhk'
