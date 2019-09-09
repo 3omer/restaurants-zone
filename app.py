@@ -168,29 +168,36 @@ def menuItemJSON(restaurant_id, item_id):
 ####
 
 # Here goes the authorization routes 
-from requests_oauthlib import OAuth2Session
-from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 import facebook_credintials
-# helper method return configured facebook oauth session
-def get_facebook_session():
-    fb = OAuth2Session(
-                            client_id=facebook_credintials.client_id,
-                            redirect_uri=facebook_credintials.redirect_uri,
-                            scope=facebook_credintials.scope)
-    return facebook_compliance_fix(fb)
+from facebook_oauth import FaceBookOauthSession
+
 
 @app.route('/auth/facebook', methods=['GET'])
 def facebookAuth():
-    facebook = get_facebook_session()
-    auth_url, state = facebook.authorization_url(facebook_credintials.authorization_base_url)
+    facebook = FaceBookOauthSession()
+    auth_url, state = facebook.authorization_url()
     return redirect(auth_url)
 
-@app.route('/auth/facebook/callback', methods=['GET','POST'])
+@app.route('/auth/facebook/callback', methods=['GET'])
 def facebookCallback():
     response_url = request.url
-    facebook = get_facebook_session()
-    token = facebook.fetch_token(facebook_credintials.token_url, 
-                                client_secret=facebook_credintials.client_secret, 
-                                authorization_response=response_url)
-    user_info = facebook.get('https://graph.facebook.com/me', params={'fields': 'email,name'})
-    return user_info.json()
+    facebook = FaceBookOauthSession()
+    token = facebook.fetch_token(authorization_response=response_url)
+    # for debuging store token in fb credintials variable instead of session
+    facebook_credintials.g_token = token
+    return token
+
+@app.route('/auth/facebook/revoke')
+def facebookRevoke():
+    r = FaceBookOauthSession.authorized_session(facebook_credintials.g_token).revoke()
+    return r.json()
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    fb = FaceBookOauthSession.authorized_session(facebook_credintials.g_token)
+    r = fb.profile()
+    return r
+
+
+app.debug = True
+app.run('', 8000)
