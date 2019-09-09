@@ -1,3 +1,4 @@
+import os
 from flask import Flask,request, render_template, url_for, redirect,flash, jsonify
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
@@ -6,6 +7,7 @@ from database_setup import Base, Restaurant, MenuItem
 
 app = Flask(__name__)
 app.secret_key = 'ulvuelhk'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
 
 # database configuration
 engine = create_engine('sqlite:///restaurantmenu.db', connect_args={'check_same_thread': False})
@@ -164,3 +166,31 @@ def menuItemJSON(restaurant_id, item_id):
 # session.query(MenuItem).with_parent(restaurant, 'restaurant_id')
 # theres is more check the docs
 ####
+
+# Here goes the authorization routes 
+from requests_oauthlib import OAuth2Session
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
+import facebook_credintials
+# helper method return configured facebook oauth session
+def get_facebook_session():
+    fb = OAuth2Session(
+                            client_id=facebook_credintials.client_id,
+                            redirect_uri=facebook_credintials.redirect_uri,
+                            scope=facebook_credintials.scope)
+    return facebook_compliance_fix(fb)
+
+@app.route('/auth/facebook', methods=['GET'])
+def facebookAuth():
+    facebook = get_facebook_session()
+    auth_url, state = facebook.authorization_url(facebook_credintials.authorization_base_url)
+    return redirect(auth_url)
+
+@app.route('/auth/facebook/callback', methods=['GET','POST'])
+def facebookCallback():
+    response_url = request.url
+    facebook = get_facebook_session()
+    token = facebook.fetch_token(facebook_credintials.token_url, 
+                                client_secret=facebook_credintials.client_secret, 
+                                authorization_response=response_url)
+    user_info = facebook.get('https://graph.facebook.com/me', params={'fields': 'email,name'})
+    return user_info.json()
