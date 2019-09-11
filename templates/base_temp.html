@@ -53,10 +53,10 @@
                     <small class="user-email">{{g.user.get('email')}}</small>
                 </div>
             </div>
-            <a class="btn btn-dark" href="{{url_for('facebookLogout')}}">Logout</a>
+            <a class="btn btn-sm btn-dark" href="{{url_for('facebookLogout')}}">Logout</a>
             {% else %}
-            <span class="alert alert-dismissible alert-info mb-0">You can use facebook to login</span>
-            <a class="btn btn-primary" href="{{url_for('facebookAuth')}}">Facebook Login</a>
+            <small class="alert alert-dismissible alert-info mb-0 p-2">You can use facebook to login</small>
+            <a class="btn btn-sm btn-primary" href="{{url_for('facebookAuth')}}">Facebook Login</a>
             {% endif %}
         </div>
     </header>

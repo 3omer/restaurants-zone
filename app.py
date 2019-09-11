@@ -219,8 +219,8 @@ def facebookCallback():
     facebook_credintials.g_token = token
     user = facebook.profile()
     store_user_dict_to_session(user)
-    flash('Welcome %s' % user.get('name') , category='success')
-    return redirect('/')
+    flash('Welcome %s' % user.get('name') , category='login, success')
+    return redirect(url_for('showRestaurants'))
 
 @app.route('/auth/facebook/revoke')
 def facebookRevoke():
@@ -230,7 +230,7 @@ def facebookRevoke():
 @app.route('/auth/facebook/logout')
 def facebookLogout():
     if g.user is None:
-        flash('You are not logged in', category='info')
+        flash('You are not logged in', category='login info')
     else:
         delete_user_from_session()
         flash('You are logged out', category='secondary')
@@ -244,4 +244,4 @@ def profile():
 
 
 app.debug = True
-app.run('', 8000)
+app.run('0.0.0.0', 8000)
