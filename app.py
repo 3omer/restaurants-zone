@@ -33,6 +33,12 @@ def get_user_dict_from_session():
         'picture_url': login_session.get('picture_url')
     }
 
+def delete_user_from_session():
+    del login_session['facebook_id']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture_url']
+
 
 @app.before_request
 def load_logged_user():
@@ -201,24 +207,34 @@ from facebook_oauth import FaceBookOauthSession
 def facebookAuth():
     facebook = FaceBookOauthSession()
     auth_url, state = facebook.authorization_url()
+    login_session['state'] = state
     return redirect(auth_url)
 
 @app.route('/auth/facebook/callback', methods=['GET'])
 def facebookCallback():
     response_url = request.url
-    facebook = FaceBookOauthSession()
+    facebook = FaceBookOauthSession(state=login_session['state'])
     token = facebook.fetch_token(authorization_response=response_url)
     # for debuging store token in fb credintials variable instead of session
     facebook_credintials.g_token = token
     user = facebook.profile()
     store_user_dict_to_session(user)
     flash('Welcome %s' % user.get('name') , category='success')
-    return redirect(request.args.get('next'))
+    return redirect('/')
 
 @app.route('/auth/facebook/revoke')
 def facebookRevoke():
     r = FaceBookOauthSession.authorized_session(facebook_credintials.g_token).revoke()
     return r.json()
+
+@app.route('/auth/facebook/logout')
+def facebookLogout():
+    if g.user is None:
+        flash('You are not logged in', category='info')
+    else:
+        delete_user_from_session()
+        flash('You are logged out', category='secondary')
+    return redirect('/')
 
 @app.route('/profile', methods=['GET'])
 def profile():
