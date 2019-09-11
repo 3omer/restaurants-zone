@@ -1,5 +1,6 @@
 import os
-from flask import Flask,request, render_template, url_for, redirect,flash, jsonify
+from flask import Flask,request, render_template, url_for, redirect,flash, jsonify, g
+from flask import session as login_session
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
@@ -15,6 +16,30 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+# helper functions
+def store_user_dict_to_session(user):
+    login_session['facebook_id'] = user.get('id')
+    login_session['username'] = user.get('name')
+    login_session['email'] = user.get('email')
+    login_session['picture_url'] = user.get('picture').get('data').get('url')
+
+def get_user_dict_from_session():
+    return {
+        'facebook_id': login_session.get('facebook_id'),
+        'username': login_session.get('username'),
+        'email': login_session.get('email'),
+        'picture_url': login_session.get('picture_url')
+    }
+
+
+@app.before_request
+def load_logged_user():
+    if login_session.get('facebook_id') is None:
+        g.user = None
+    else:
+        g.user = get_user_dict_from_session()
 
 
 # urls and handlers definitons
@@ -185,7 +210,10 @@ def facebookCallback():
     token = facebook.fetch_token(authorization_response=response_url)
     # for debuging store token in fb credintials variable instead of session
     facebook_credintials.g_token = token
-    return token
+    user = facebook.profile()
+    store_user_dict_to_session(user)
+    flash('Welcome %s' % user.get('name') , category='success')
+    return redirect(request.args.get('next'))
 
 @app.route('/auth/facebook/revoke')
 def facebookRevoke():
@@ -196,7 +224,7 @@ def facebookRevoke():
 def profile():
     fb = FaceBookOauthSession.authorized_session(facebook_credintials.g_token)
     r = fb.profile()
-    return r
+    return r,200
 
 
 app.debug = True
