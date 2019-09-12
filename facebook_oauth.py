@@ -28,7 +28,14 @@ class FaceBookOauthSession(OAuth2Session):
         return OAuth2Session.fetch_token(self, token_url, authorization_response=authorization_response, client_secret=client_secret)
 
     def profile(self):
-        return self.get(_PROFILE_URL).json()
+        '''
+        return a dict object:
+        keys: facebook_id, name, email,piture all string
+        '''
+        profile = self.get(_PROFILE_URL).json()
+        profile['facebook_id'] = int(profile['id'])
+        profile['picture'] = profile.get('picture').get('data').get('url')
+        return profile
 
     def revoke(self):
         return self.delete(_REVOKE_URL) 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script async src="{{url_for('static', filename='js/jquery-3.4.0.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jquery-3.4.0.min.js')}}"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
     <title>Restaurants-Zone</title>
 </head>
@@ -46,7 +46,7 @@
         <div class="user-status d-flex justify-content-between align-items-center bg-light shadow-sm p-2 px-3">
             {% if g.user %}
             <div class="user media text-secondary">
-                <img class="user-picture rounded-circle mr-2" src="{{g.user.get('picture_url')}}"
+                <img class="user-picture rounded-circle mr-2" src="{{g.user.get('picture')}}"
                     alt="user profile picture">
                 <div class="media-body">
                     <small class="user-name">{{g.user.get('username')}}</small> <br>
@@ -65,8 +65,10 @@
     {% block fb %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, m in messages %}
-    <div class="alert alert-{{category}} mt-1">
-        <span>{{m}}</span>
+    <div class="alert alert-{{category}} alert-dismissible mt-1 fade show" role="alert">
+        <small>{{m}}</small>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="True">&times;</span></button>
     </div>
     {% endfor %}
     {% endwith %}
