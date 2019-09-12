@@ -3,7 +3,7 @@ from flask import Flask,request, render_template, url_for, redirect,flash, jsoni
 from flask import session as login_session
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ app.secret_key = 'ulvuelhk'
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
 
 # database configuration
-engine = create_engine('sqlite:///restaurantmenu.db', connect_args={'check_same_thread': False})
+engine = create_engine('sqlite:///restaurantmenu-v2.0.db', connect_args={'check_same_thread': False})
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -106,7 +106,7 @@ def deleteRestaurant(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>/menu')
 def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
-    menu_items = session.query(MenuItem).filter(MenuItem.resturant == restaurant)
+    menu_items = session.query(MenuItem).filter(MenuItem.restaurant == restaurant)
     return render_template('menu.html', restaurant=restaurant, menu_items=menu_items)
 
 
@@ -129,7 +129,7 @@ def newMenuItem(restaurant_id):
                         description=description,
                         course=course,
                         price=price,
-                        resturant=restaurant)
+                        restaurant=restaurant)
         session.add(item)
         session.commit()
         # flash a message
@@ -172,7 +172,7 @@ def deleteMenuItem(restaurant_id, item_id):
     if g.user is None:
         flash('You are not authorized to perform this action .. please Login', category='warning')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
-        
+
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
     if request.method == 'POST':
@@ -258,11 +258,12 @@ def facebookRevoke():
     return r.json()
 
 
-@app.route('/profile', methods=['GET'])
-def profile():
-    fb = FaceBookOauthSession.authorized_session(facebook_credintials.g_token)
-    r = fb.profile()
-    return r,200
+@app.route('/users', methods=['GET'])
+def user():
+    users = session.query(User).all()
+    # fb = FaceBookOauthSession.authorized_session(facebook_credintials.g_token)
+    # r = fb.profile()
+    return jsonify([user.serialize for user in users])
 
 
 app.debug = True
