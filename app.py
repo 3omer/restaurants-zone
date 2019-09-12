@@ -112,6 +112,9 @@ def restaurantMenu(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
+    if g.user is None:
+        flash('You are not authorized to perform this action .. please Login', category='warning')
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     if request.method == 'POST':
         # get data
         name = request.form['name']
@@ -137,6 +140,10 @@ def newMenuItem(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:item_id>/edit', methods=['GET', 'POST'])
 def editMenuItem(restaurant_id, item_id):
+    if g.user is None:
+        flash('You are not authorized to perform this action .. please Login', category='warning')
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+
     item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
     restaurant = session.query(Restaurant).filter(Restaurant.id ==  restaurant_id).one_or_none()
     if request.method == 'POST':
@@ -162,6 +169,10 @@ def editMenuItem(restaurant_id, item_id):
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteMenuItem(restaurant_id, item_id):
+    if g.user is None:
+        flash('You are not authorized to perform this action .. please Login', category='warning')
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+        
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
     if request.method == 'POST':
