@@ -58,6 +58,9 @@ def showRestaurants():
 
 @app.route('/restaurant/new', methods=['GET', 'POST'])
 def newRestaurant():
+    if g.user is None:
+        flash('You are not authorized to perform this action .. please Login', category='warning')
+        return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
         new_name = request.form['name']
         new_restaurant = Restaurant(name=new_name)
@@ -70,6 +73,9 @@ def newRestaurant():
 
 @app.route('/restaurant/<int:restaurant_id>/edit', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
+    if g.user is None:
+        flash('You are not authorized to perform this action .. please Login', category='warning')
+        return redirect(url_for('showRestaurants'))
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     if request.method == 'POST':
         new_name = request.form['name']
@@ -83,6 +89,9 @@ def editRestaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/delete', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
+    if g.user is None:
+        flash('You are not authorized to perform this action .. please Login', category='warning')
+        return redirect(url_for('showRestaurants'))
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     # menu_length = session.query(MenuItem).filter(MenuItem.restaurant == restaurant).count()
     if request.method == 'POST':
@@ -222,10 +231,6 @@ def facebookCallback():
     flash('Welcome %s' % user.get('name') , category='login, success')
     return redirect(url_for('showRestaurants'))
 
-@app.route('/auth/facebook/revoke')
-def facebookRevoke():
-    r = FaceBookOauthSession.authorized_session(facebook_credintials.g_token).revoke()
-    return r.json()
 
 @app.route('/auth/facebook/logout')
 def facebookLogout():
@@ -235,6 +240,12 @@ def facebookLogout():
         delete_user_from_session()
         flash('You are logged out', category='secondary')
     return redirect('/')
+
+@app.route('/auth/facebook/revoke')
+def facebookRevoke():
+    r = FaceBookOauthSession.authorized_session(facebook_credintials.g_token).revoke()
+    return r.json()
+
 
 @app.route('/profile', methods=['GET'])
 def profile():
