@@ -57,7 +57,7 @@ def editRestaurant(restaurant_id):
 
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     if restaurant.user_id != g.user.get('facebook_id'):
-        flash('You dont have the permissions to edit this restaurant', category='danger')
+        flash('You dont have the permissions to perform this action.', category='danger')
         return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
         new_name = request.form['name']
@@ -77,7 +77,7 @@ def deleteRestaurant(restaurant_id):
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     # menu_length = session.query(MenuItem).filter(MenuItem.restaurant == restaurant).count()
     if restaurant.user_id != g.user.get('facebook_id'):
-        flash('You dont have the permissions to delete this restaurant', category='danger')
+        flash('You dont have the permissions to perform this action.', category='danger')
         return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
         session.delete(restaurant)
@@ -100,13 +100,17 @@ def newMenuItem(restaurant_id):
     if g.user is None:
         flash('You are not authorized to perform this action .. please Login', category='warning')
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+       
+    restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
+    if g.user.get('facebook_id') != restaurant.user_id:
+        flash("You don't have the permission to perform this action.", category="danger")
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     if request.method == 'POST':
         # get data
         name = request.form['name']
         description = request.form['description']
         course = request.form['course']
         price = request.form['price']
-        restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
         # validate input
         # TODO
         # insert data
@@ -132,6 +136,9 @@ def editMenuItem(restaurant_id, item_id):
 
     item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
     restaurant = session.query(Restaurant).filter(Restaurant.id ==  restaurant_id).one_or_none()
+    if g.user.get('facebook_id') != item.user_id:
+        flash("You don't have the permission to perform this action.", category="danger")
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     if request.method == 'POST':
         # get data
         name = request.form['name']
@@ -161,6 +168,10 @@ def deleteMenuItem(restaurant_id, item_id):
 
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     item = session.query(MenuItem).filter(MenuItem.id == item_id).one_or_none()
+    if g.user.get('facebook_id') != item.user_id:
+        flash("You don't have the permission to perform this action.", category="danger")
+        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+
     if request.method == 'POST':
         # delete menu item
         session.delete(item)
