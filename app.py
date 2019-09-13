@@ -54,7 +54,11 @@ def editRestaurant(restaurant_id):
     if g.user is None:
         flash('You are not authorized to perform this action .. please Login', category='warning')
         return redirect(url_for('showRestaurants'))
+
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
+    if restaurant.user_id != g.user.get('facebook_id'):
+        flash('You dont have the permissions to edit this restaurant', category='danger')
+        return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
         new_name = request.form['name']
         restaurant.name = new_name
@@ -72,6 +76,9 @@ def deleteRestaurant(restaurant_id):
         return redirect(url_for('showRestaurants'))
     restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
     # menu_length = session.query(MenuItem).filter(MenuItem.restaurant == restaurant).count()
+    if restaurant.user_id != g.user.get('facebook_id'):
+        flash('You dont have the permissions to delete this restaurant', category='danger')
+        return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
         session.delete(restaurant)
         session.commit()
@@ -299,4 +306,5 @@ def delete_user_from_session():
 
 
 app.debug = True
-app.run('0.0.0.0', 8000)
+
+app.run('0.0.0.0', 8000, use_debugger=True)
