@@ -268,8 +268,8 @@ def facebookRevoke():
 @app.route('/users', methods=['GET'])
 def users():
     users = session.query(User).all()
-    fb = FaceBookOauthSession.authorized_session(facebook_credintials.g_token)
-    r = fb.profile()
+    user = users[0]
+    store_user_dict_to_session({'facebook_id':user.id, 'email': user.email, 'name': user.name, 'picture': user.picture})
     # app.logger.log(type(r.get('facebook_id')))
     return jsonify([user.serialize for user in users])
 

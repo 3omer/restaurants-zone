@@ -46,7 +46,7 @@
         <div class="user-status d-flex justify-content-between align-items-center bg-light shadow-sm p-2 px-3">
             {% if g.user %}
             <div class="user media text-secondary">
-                <img class="user-picture rounded-circle mr-2" src="{{g.user.get('picture')}}"
+                <img class="user-picture rounded-circle mr-2" src="{{g.user.get('picture')}}" width='50'
                     alt="user profile picture">
                 <div class="media-body">
                     <small class="user-name">{{g.user.get('username')}}</small> <br>
