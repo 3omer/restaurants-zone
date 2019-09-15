@@ -24,12 +24,17 @@ def load_logged_user():
         g.user = None
     else:
         g.user = get_user_dict_from_session()
+        # is_owner is a function return True if the user is the owner of 
+        # a restaurant or menu item given user_id as a parameter
+        g.user['is_owner'] = lambda id: g.user['facebook_id'] == id or False 
 
 
 # urls and handlers definitons
 @app.route('/')
 @app.route('/restaurants')
 def showRestaurants():
+    # TODO: sort options
+    # sort_by: name, menu_length, 
     restaurants = session.query(Restaurant).all()
     return render_template('restaurants.html', restaurants=restaurants)
 

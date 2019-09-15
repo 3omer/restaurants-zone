@@ -7,6 +7,8 @@
     <div class="container px-0 px-2">
         <div class="row bg-white p-2 sticky-top">
             <div class="options d-flex w-100 justify-content-between shadow-sm p-2">
+                {% if g.user %}
+                <!-- new option only available for logged in users -->
                 <button class="btn btn-sm btn-primary" id="addRestaurant" data-toggle="modal" data-target="#restaurantModal"
                     data-action="{{url_for('newRestaurant')}}" data-title="Create new Restaurant">
                     <span>
@@ -17,6 +19,7 @@
                     </span>
                     <span class="p-1">new</span>
                 </button>
+                {% endif %}
                 <button class="btn btn-sm btn-secondary">sort</button>
             </div>
         </div>
@@ -37,7 +40,7 @@
                             href="{{url_for('restaurantMenu', restaurant_id=r.id)}}">
                             Go
                         </a>
-                        {% if g.user %}
+                        {% if g.user and g.user.get('is_owner')(r.user_id) %}
                         <!-- options should be available only for the owner -->
                         <div class="btn-group btn-group-sm mt-1 mt-sm-0">
                             <button class="btn btn-secondary" id="editRestaurant" data-toggle="modal"

@@ -21,8 +21,8 @@
     <div class="menu-list bg-light card my-3">
         <div class="card-header d-flex  justify-content-between align-items-center">
             <h5 class="mb-0">Menu</h5>
-            {% if g.user %}
-            <!-- option only available for logged in users -->
+            {% if g.user and g.user.get('is_owner')(restaurant.user_id) %}
+            <!-- option only available for restaurant's owner -->
             <button class="btn btn-primary btn-sm rounded-pill" id="addItem" data-toggle="modal"
                 data-target="#menuItemModal" data-action="{{url_for('newMenuItem', restaurant_id=restaurant.id)}}"
                 data-title="Create new Item">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="ml-1 p-2">
                     <h4 class="text-center bg-info rounded text-white">{{item.price}}</h4>
-                    {% if g.user %}
+                    {% if g.user and g.user.get('is_owner')(item.user_id) %}
                     <!-- options only available for owner -->
                     <div class="btn-group btn-group-sm">
                         <button class="btn btn-secondary" id="editItem" data-toggle="modal" data-target="#menuItemModal"
