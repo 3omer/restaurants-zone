@@ -1,12 +1,59 @@
+{% extends 'base_temp.html' %}
 <!-- item -->
-<form method="POST">
-        <input type="text" name="name" value="{{item.name}}">
-        <input type="text" name="course" value="{{item.course}}">
-        <input type="text" name="description"  value="{{item.description}}" id="">
-        <input type="text" name="price" value="{{item.price}}" id="">
-        <input type="submit" name="submit" id="">
-    </form>
-    
-    
-    <!-- notes -->
-    <!-- this might be a pop up -->
+<!-- formHandler -->
+{% block content %}
+<section class="container">
+    <div class="card">
+        <div class="card-header text-dark">Menu Item</div>
+        <div class="card-body">
+            <form class="was-validated" id="menuItemForm" method="POST" action="" novalidate>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="nameInput" name="name" placeholder="Enter item name"
+                        value="{{form.name.value}}" required>
+                    {% if form.name.errors %}
+                    <div class="invalid-feedback text-danger">{{form.name.errors}}</div>
+                    {% else %}
+                    <div class="valid-feedback text-success">Looks good !</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="courseInput" name="course"
+                        placeholder="Item course eg. Entree, Appetier .." value="{{form.course.value}}" required>
+                    {% if form.course.errors %}
+                    <div class="invalid-feedback">{{form.course.errors}}</div>
+                    {% else %}
+                    <div class="valid-feedback">Looks good !</div>
+                    {% endif %}
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">$</span>
+                    </div>
+                    <input type="text" class="form-control" id="priceInput" name="price" placeholder="15" value="{{form.price.value}}"
+                        aria-label="price" aria-describedby="basic-addon1" required>
+                    {% if form.price.errors %}
+                    <div class="invalid-feedback">{{form.price.errors}}</div>
+                    {% else %}
+                    <div class="valid-feedback">Looks good !</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="description" id="descriptionInput"
+                        placeholder="a brief description of the item." rows="3" required>{{form.description.value}}</textarea>
+                    {% if form.description.errors %}
+                     <div class="invalid-feedback">{{form.description.errors}}</div> 
+                    {% else %}
+                    <div class="valid-feedback">Looks good !</div>
+                    {% endif %}
+                </div>
+                <div class="mt-2 p-2 border-top">
+                    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+<!-- notes -->
+<!-- this might be a pop up -->

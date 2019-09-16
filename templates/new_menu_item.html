@@ -1,12 +1,45 @@
-
-<form method="POST">
-    <input type="text" name="name" value="">
-    <input type="text" name="course" value="">
-    <input type="text" name="description"  value="" id="">
-    <input type="text" name="price" value="" id="">
-    <input type="submit" name="submit" id="">
-</form>
-
-
+{% extends 'base_temp.html' %}
+<!-- item -->
+<!-- formHandler -->
+{% block content %}
+<section class="container">
+    <div class="card">
+        <div class="card-header text-dark">Menu Item</div>
+        <div class="card-body">
+            <form class="was-validated" id="menuItemForm" method="POST" action="" novalidate>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="nameInput" name="name" placeholder="Enter item name"
+                        required>
+                    <div class="invalid-feedback text-danger">{{form.name.errors or ''}}</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="courseInput" name="course"
+                        placeholder="Item course eg. Entree, Appetier .." value="" required>
+                    <div class="invalid-feedback">{{form.course.errors or ''}}</div>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">$</span>
+                    </div>
+                    <input type="text" class="form-control" id="priceInput" name="price" placeholder="15"
+                        value="" aria-label="price" aria-describedby="basic-addon1" required>
+                    <div class="invalid-feedback">{{form.price.errors or ''}}</div>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="description" id="descriptionInput"
+                        placeholder="a brief description of the item." rows="3"
+                        required></textarea>
+                    <div class="invalid-feedback">{{form.description.errors or ''}}</div>
+                    <div class="valid-feedback">Looks good !</div>
+                </div>
+                <div class="mt-2 p-2 border-top">
+                    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
 <!-- notes -->
 <!-- this might be a pop up -->
