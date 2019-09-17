@@ -6,6 +6,9 @@ class _Input:
         self.errors = errors
 
 class ItemFormHandler:
+    '''Handle Menu Item form data, provid validation with appropiate error message for invalid fields.\
+        pass menu item argument then call validate.
+        '''
     def __init__(self, name=None, description=None, course=None, price=None, **kwargs):
         # attributes represents input fields
         # Input object hold value and errors of an input field form
@@ -18,7 +21,7 @@ class ItemFormHandler:
 
     @property
     def input_args(self):
-        ''' this method returned modified inputs arguments if any '''
+        ''' this method return modified inputs arguments if any as a dict object'''
         
         return {
             'name': self.name.value,
@@ -28,6 +31,7 @@ class ItemFormHandler:
         }
 
     # helper methods
+    # invalid inputs are re-seted
     def _validate_name(self):
         if self.name.value and len(self.name.value) > 2:
             logging.info('name input is valid')
@@ -36,6 +40,8 @@ class ItemFormHandler:
             self.name.errors = "Enter an item name. ( 3 letters is minimum )"
             logging.info('name input is invalid less than 3 letters or None: value ={}'
                             .format(self.name.value))
+            self.name.value = ""
+            
             return False
     
     def _validate_course(self):
@@ -45,6 +51,7 @@ class ItemFormHandler:
         else: 
             self.course.errors = "Enter a valid course. ( 3 letters miimum )" 
             logging.info('course input is invalid None or less than 3 letters Value:{}'.format(self.course.value))
+            self.course.value = ""
             return False
 
     def _validate_description(self):
@@ -54,6 +61,7 @@ class ItemFormHandler:
         else:
             self.description.errors = "Enter a valid description. ( 15 letters minimum )" 
             logging.info('descrition input is invalid, None or less than 15 letters, value:{}'.format(self.description.value))
+            self.description.value = ""
             return False
 
     def _validate_price(self):
@@ -65,12 +73,13 @@ class ItemFormHandler:
         else:
             self.price.errors = "Enter a valid price ( eg. 15 )"
             logging.info('price input is invalid, None or not digits, value:{}'.format(self.price.value))
+            self.price.value = ""
             return False
     
 
     def validate(self):
-        "Return True if all fields are valid False other wise"
+        "Return True if all fields are valid , False other wise, note: invalid failds are rested to empty"
         # using and will prvent callling all methods when one fail
         is_valid = self._validate_name() & self._validate_description() \
-             & self._validate_course() & self._validate_price()
+                    & self._validate_course() & self._validate_price()
         return is_valid     

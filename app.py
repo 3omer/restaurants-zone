@@ -140,25 +140,25 @@ def editMenuItem(restaurant_id, item_id):
     if g.user.get('facebook_id') != item.user_id:
         flash("You don't have the permission to perform this action.", category="danger")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+    
     if request.method == 'POST':
         # get data
-        name = request.form['name']
-        description = request.form['description']
-        course = request.form['course']
-        price = request.form['price']
-        restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one_or_none()
-        # validate input
-        # TODO
-        # insert data
-        item.name = name
-        item.description = description
-        item.course = course
-        item.price = price
-        session.add(item)
-        session.commit()
-        flash('menu item updated !', 'success')
-        return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
-    return render_template('edit_menu_item.html', item=item)
+        form_handler = ItemFormHandler(**request.form)
+        if form_handler.validate():
+            modified_args = form_handler.input_args
+            item.name = modified_args['name']
+            item.description = modified_args['description']
+            item.course = modified_args['course']
+            item.price = modified_args['price']
+            try:
+                session.add(item)
+                session.commit()
+            except Exception:
+                flash('Couldn\'t save your changes.', category='warning')
+
+            flash('menu item updated !', 'success')
+            return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
+    return render_template('edit_menu_item.html', form=form_handler)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:item_id>/delete', methods=['GET', 'POST'])
