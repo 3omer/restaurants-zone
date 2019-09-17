@@ -4,7 +4,7 @@ from flask import session as login_session
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem, User
-from forms_handler import ItemFormHandler
+from forms_handler import ItemFormHandler, RestaurantFormHandler
 app = Flask(__name__)
 app.secret_key = 'ulvuelhk'
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
@@ -23,7 +23,7 @@ def load_logged_user():
         g.user = None
     else:
         g.user = get_user_dict_from_session()
-        # is_owner is a function return True if the user is the owner of 
+        # is_owner returns True if the user is the owner of 
         # a restaurant or menu item given user_id as a parameter
         g.user['is_owner'] = lambda id: g.user['facebook_id'] == id or False 
 
@@ -43,14 +43,21 @@ def newRestaurant():
     if g.user is None:
         flash('You are not authorized to perform this action .. please Login', category='warning')
         return redirect(url_for('showRestaurants'))
+
+    form_handler = RestaurantFormHandler()
     if request.method == 'POST':
-        new_name = request.form['name']
-        new_restaurant = Restaurant(name=new_name, user_id=g.user['facebook_id'])
-        session.add(new_restaurant)
-        session.commit()
-        flash(' restaurant %s is created !' % new_name, 'success')
-        return redirect(url_for('showRestaurants'))
-    return render_template('new_restaurant.html')
+        form_handler = RestaurantFormHandler(**request.form)
+
+        if form_handler.validate():
+            valid_args = form_handler.input_arg
+            new_restaurant = Restaurant(**valid_args, user_id=g.user['facebook_id'])
+            session.add(new_restaurant)
+            session.commit()
+            flash(' restaurant %s is now available !' % new_restaurant.name, 'success')
+            return redirect(url_for('showRestaurants'))
+        else:
+            return render_template('edit_restaurant.html', form=form_handler)
+    return render_template('new_restaurant.html', form=form_handler)
 
 
 @app.route('/restaurant/<int:restaurant_id>/edit', methods=['GET', 'POST'])
@@ -65,12 +72,17 @@ def editRestaurant(restaurant_id):
         return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
         new_name = request.form['name']
-        restaurant.name = new_name
-        session.add(restaurant)
-        session.commit()
-        flash('change saved !', 'success')
-        return redirect(url_for('showRestaurants'))
-    return render_template('edit_restaurant.html', name=restaurant.get('name'))
+        form_handler = RestaurantFormHandler(name= new_name)
+        if form_handler.validate():
+            new_name = form_handler.input_arg['name']
+            restaurant.name = new_name
+            session.add(restaurant)
+            session.commit()
+            flash('changes saved !', 'success')
+            return redirect(url_for('showRestaurants'))
+        else:
+            return render_template('edit_restaurants.html', form=form_handler)
+    return render_template('edit_restaurant.html', form=form_handler)
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete', methods=['GET', 'POST'])
@@ -318,5 +330,4 @@ def delete_user_from_session():
 
 
 app.debug = True
-
 app.run('0.0.0.0', 8000, use_debugger=True)

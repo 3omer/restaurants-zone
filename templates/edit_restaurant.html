@@ -1,12 +1,24 @@
-<!-- restaurant name -->
+{% extends 'base_temp.html' %}
 
-{% with messages = get_flashed_messages() %}
-{% for m in messages %} 
-<h3>{{m}}</h3>
-{%endfor %}
-{% endwith %}
-<form  method="post">
-    <input type="text" name="name" value="{{name}}">
-    <input type="submit" name="submit" id="">
+{% block content %}
+<div class="">
+    <form id="restaurantForm" class="was-validated" method="POST" novalidate >
+        <div class="form-group">
+            <input type="text" class="form-control" id="nameInput" name="name" value="{{form.name.value}}" placeholder="Enter a restaurant name" required>
+            <div class="invalid-feedback" >{{form.name.errors or ''}}</div>
+        </div>
+        <div class="border-top p-2">
+            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </form>
+    <!-- <script>
+        $('#restaurantForm').submit(function(event){
+            event.preventDefault();
+            $.post('')
 
-</form>
+        })
+    </script> -->
+</div>
+
+{% endblock %}
