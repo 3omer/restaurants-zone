@@ -45,6 +45,8 @@ class FaceBookOauthSession(OAuth2Session):
         profile = self.get(_PROFILE_URL).json()
         profile['facebook_id'] = int(profile['id'])
         profile['picture'] = profile.get('picture').get('data').get('url')
+        # TODO : add 'access_token' key to profile dict 
+        # profile['access_token'] = self.token
         return profile
 
     def revoke(self):
