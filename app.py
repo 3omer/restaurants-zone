@@ -81,7 +81,7 @@ def editRestaurant(restaurant_id):
             flash('changes saved !', 'success')
             return redirect(url_for('showRestaurants'))
         else:
-            return render_template('edit_restaurants.html', form=form_handler)
+            return render_template('edit_restaurant.html', form=form_handler)
     return render_template('edit_restaurant.html', form=form_handler)
 
 
@@ -237,6 +237,8 @@ from facebook_oauth import FaceBookOauthSession
 def facebookAuth():
     # make sure to clean any previous login session
     # delete_user_from_session()
+    # TODO: logged in users shouldn't run this route
+    # redirected to logout first
     facebook = FaceBookOauthSession()
     auth_url, state = facebook.authorization_url()
     login_session['state'] = state

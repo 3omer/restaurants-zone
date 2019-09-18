@@ -63,7 +63,7 @@ class ItemFormHandler(FormHandler):
     '''Handle Menu Item form data, provid validation with appropiate error message for invalid fields.\
         pass menu item argument then call validate.
         '''
-    def __init__(self, name=None, description=None, course=None, price=None, **kwargs):
+    def __init__(self, name='', description='', course='', price='', **kwargs):
         super().__init__()
         # attributes represents input fields
         # Input object hold value and errors of an input field form
