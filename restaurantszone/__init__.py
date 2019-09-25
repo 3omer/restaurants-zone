@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from restaurantszone import db
+from . import db
 
 def create_app(test_config=None):
 
@@ -21,7 +21,7 @@ def create_app(test_config=None):
     except OSError as identifier:
         pass
 
-    
+
     db.init_app(app)
     
     @app.route('/hello')

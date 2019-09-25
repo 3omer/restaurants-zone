@@ -1,12 +1,11 @@
-
-
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from restaurantszone.db import get_db
 
-
+Base = declarative_base()
 # declaring the object model of the table
-
 class User(Base):
     
     __tablename__ = 'user'
@@ -27,6 +26,14 @@ class User(Base):
             'joined': self.time_joined
         }
 
+    @staticmethod
+    def get_all():
+        return get_db().query(User).all()
+
+    @staticmethod
+    def get_by_id(id):
+        return get_db().query(User).one_or_none()
+
 class Restaurant(Base):
     __tablename__ = 'restaurant'
 
@@ -42,6 +49,14 @@ class Restaurant(Base):
             'user_id': self.user_id, 
             'name': self.name
         }
+    
+    @staticmethod
+    def get_all():
+        return get_db().query(Restaurant).all()
+
+    @staticmethod
+    def get_by_id(id):
+        return get_db().query(Restaurant).filter_by(id = id).one_or_none()
 
 
 class MenuItem(Base):
@@ -68,3 +83,11 @@ class MenuItem(Base):
             'description': self.description,
             'price': self.price
         }
+
+    @staticmethod
+    def get_all():
+        return get_db().query(MenuItem).all()
+
+    @staticmethod
+    def get_by_id(id):
+        return get_db().query(MenuItem).filter_by(id = id).one_or_none()
