@@ -50,9 +50,9 @@ class RestaurantFormHandler(FormHandler):
             logging.info('restaurant name is valid')
             return True
         else:
-            self.name.value = ""
             self.name.errors = 'Enter a restaurant name. ( 3 letters minimum )'
             logging.info('invalid restaurant name. value:{}'.format(self.name.value))
+            self.name.value = ""
             return False
     
     def validate(self):
@@ -137,4 +137,4 @@ class ItemFormHandler(FormHandler):
         # using and will prvent callling all methods when one fail
         self.is_valid= self._validate_name() & self._validate_description() \
                     & self._validate_course() & self._validate_price()
-        return self.is_valid     
+        return self.is_valid    
