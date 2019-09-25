@@ -1,12 +1,9 @@
-import sys
-import datetime
-from sqlalchemy.ext.declarative import declarative_base
+
+
 from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-
-Base = declarative_base()
 
 # declaring the object model of the table
 
@@ -71,7 +68,3 @@ class MenuItem(Base):
             'description': self.description,
             'price': self.price
         }
-
-
-engine = create_engine('sqlite:///restaurantmenu-v2.0.db')
-Base.metadata.create_all(engine)

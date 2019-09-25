@@ -1,0 +1,10 @@
+/boot
+/.vscode
+/__pycache__
+/junks
+/instance
+*.pyc
+*.db
+fb-oauth-info.txt
+client_secret.json
+facebook_credintials.py
