@@ -1,5 +1,5 @@
-from flask import session
-
+from flask import session, g, redirect, url_for
+from functools import wraps
 
 
 # def create_user(user):
@@ -14,7 +14,17 @@ from flask import session
 #     session.add(new_user)
 #     session.commit()
 
-    
+# decorator for views that required login
+def loggin_required(view):
+    @wraps(view)
+    def decorated_func(*args, **kwargs):
+        if g.user is None:
+            flash('You are not authorized to perform this action .. please Login', category='warning')
+            return redirect('/')
+        return view(*args, **kwargs)
+    return decorated_func
+
+
 def store_user_dict_to_session(user):
     session['facebook_id'] = user.get('facebook_id')
     session['access_token'] = user.get('access_token')

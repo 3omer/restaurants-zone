@@ -1,6 +1,6 @@
 /boot
 /.vscode
-/__pycache__
+__pycache__
 /junks
 /instance
 *.pyc

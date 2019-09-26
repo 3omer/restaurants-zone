@@ -3,6 +3,7 @@ from flask import Flask
 from . import db
 
 from restaurantszone.auth import views
+from . import restaurant
 
 def create_app(test_config=None):
 
@@ -28,7 +29,7 @@ def create_app(test_config=None):
     
     # register blueprints
     app.register_blueprint(views.bp)
-
+    app.register_blueprint(restaurant.bp)
 
     @app.route('/hello')
     def hello():

@@ -55,6 +55,10 @@ class Restaurant(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    def __init__(self, name, user_id):
+        self.name = name
+        self.user_id = user_id
+
     @property
     def serialize(self):
         return {
@@ -62,10 +66,16 @@ class Restaurant(Base):
             'user_id': self.user_id, 
             'name': self.name
         }
-    
-    @staticmethod
-    def get_all():
-        return get_db().query(Restaurant).all()
+
+    def save(self):
+        ses = get_db()
+        ses.add(self)
+        ses.commit()
+        
+
+    @classmethod
+    def get_all(cls):
+        return get_db().query(Restaurant).order_by(cls.id).all()
 
     @staticmethod
     def get_by_id(id):

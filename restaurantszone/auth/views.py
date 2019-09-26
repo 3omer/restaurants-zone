@@ -1,4 +1,4 @@
-from flask import ( Blueprint, url_for, redirect, session, flash, g )
+from flask import ( Blueprint, url_for, redirect, session, request, flash, g )
 from restaurantszone.auth.facebook_auth import FaceBookOauthSession
 from restaurantszone.model import User
 from .helper import store_user_dict_to_session, delete_user_session
