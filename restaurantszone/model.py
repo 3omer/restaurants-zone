@@ -23,10 +23,10 @@ class User(Base):
         self.picture = picture
         self.fb_id = fb_id
 
-   def save(self):
-       s = get_db()
-       s.add(self)
-       s.commit()
+    def save(self):
+        s = get_db()
+        s.add(self)
+        s.commit()
    
     @staticmethod
     def get_all():

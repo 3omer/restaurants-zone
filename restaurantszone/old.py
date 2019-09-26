@@ -17,15 +17,6 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-@app.before_request
-def load_logged_user():
-    if login_session.get('facebook_id') is None:
-        g.user = None
-    else:
-        g.user = get_user_dict_from_session()
-        # is_owner returns True if the user is the owner of 
-        # a restaurant or menu item given user_id as a parameter
-        g.user['is_owner'] = lambda id: g.user['facebook_id'] == id or False 
 
 
 # urls and handlers definitons
@@ -233,51 +224,7 @@ import facebook_credintials
 from facebook_oauth import FaceBookOauthSession
 
 
-@app.route('/auth/facebook', methods=['GET'])
-def facebookAuth():
-    # make sure to clean any previous login session
-    # delete_user_from_session()
-    # TODO: logged in users shouldn't run this route
-    # redirected to logout first
-    facebook = FaceBookOauthSession()
-    auth_url, state = facebook.authorization_url()
-    login_session['state'] = state
-    return redirect(auth_url)
 
-@app.route('/auth/facebook/callback', methods=['GET'])
-def facebookCallback():
-    response_url = request.url
-    facebook = FaceBookOauthSession(state=login_session['state'])
-    token = facebook.fetch_token(authorization_response=response_url)
-    profile = facebook.profile()
-    profile['access_token'] = token.get('access_token')
-    
-    # get user from database  
-    # if it doesnt exist create new user record
-    user = session.query(User).filter(User.id == profile.get('facebook_id')).one_or_none()
-    if user is None:
-        create_user(profile)
-        flash('Hey %s, account has been created for you' % profile.get('name'), category='success')
-    else:
-        flash('Welcome back %s' % user.name, category='success')
-
-    store_user_dict_to_session(profile)
-    return redirect(url_for('showRestaurants'))
-
-
-@app.route('/auth/facebook/logout')
-def facebookLogout():
-    if g.user is None:
-        flash('You are not logged in', category='info')
-    else:
-        delete_user_from_session()
-        flash('You are logged out', category='info')
-    return redirect(r'/')
-
-@app.route('/auth/facebook/revoke')
-def facebookRevoke():
-    r = FaceBookOauthSession.authorized_session(g.user.get('access_token')).revoke()
-    return r.json()
 
 
 @app.route('/users', methods=['GET'])
@@ -291,44 +238,9 @@ def users():
 
 
 # helper functions
-def create_user(user):
-    '''
-    insert user record to databaase
-    '''
-    new_user = User(id=user.get('facebook_id'),
-                    name=user.get('name'),
-                    email=user.get('email'),
-                    picture=user.get('picture')
-                    )
-    session.add(new_user)
-    session.commit()
 
 
-def store_user_dict_to_session(user):
 
-    login_session['facebook_id'] = user.get('facebook_id')
-    login_session['username'] = user.get('name')
-    login_session['email'] = user.get('email')
-    login_session['picture'] = user.get('picture')
-    login_session['access_token'] = user.get('access_token')
-    login_session.permanent = True
-
-def get_user_dict_from_session():
-    return {
-        'facebook_id': login_session.get('facebook_id'),
-        'username': login_session.get('username'),
-        'email': login_session.get('email'),
-        'picture': login_session.get('picture'),
-        'access_token': login_session.get('access_token')
-    }
-
-def delete_user_from_session():
-
-    del login_session['facebook_id']
-    del login_session['username']
-    del login_session['email']
-    del login_session['picture']
-    del login_session['access_token']
 
 
 app.debug = True

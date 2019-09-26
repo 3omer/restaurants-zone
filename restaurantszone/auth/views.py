@@ -1,10 +1,10 @@
-from flask import ( Blueprint, url_for, redirect, session, flash )
-from restaurantszone.facebook_auth import FaceBookOauthSession
+from flask import ( Blueprint, url_for, redirect, session, flash, g )
+from restaurantszone.auth.facebook_auth import FaceBookOauthSession
 from restaurantszone.model import User
-from helper import store_user_dict_to_session, delete_user_session
+from .helper import store_user_dict_to_session, delete_user_session
 
 
-bp = Blueprint('auth', __name__, url_prefix='auth')
+bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @bp.before_request

@@ -1,4 +1,4 @@
-from facebook_credintials import CLIENT_ID, CLIENT_SECRET, APP_TOKEN
+from .facebook_credintials import CLIENT_ID, CLIENT_SECRET, APP_TOKEN
 _AUTHORIZATION_BASE_URI = 'https://www.facebook.com/v4.0/dialog/oauth?'
 _TOKEN_URL = 'https://graph.facebook.com/v4.0/oauth/access_token?'
 _REDIRECT_URI = 'http://localhost:8000/auth/facebook/callback'
@@ -14,7 +14,7 @@ _PROFILE_URL = 'https://graph.facebook.com/me?fields=name,email,picture'
 
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
-import facebook_credintials
+from . import facebook_credintials
 
 class FaceBookOauthSession(OAuth2Session):
     def __init__(self, client_id=CLIENT_ID, scope=_SCOPE, redirect_uri=_REDIRECT_URI, token=None, state=None):
