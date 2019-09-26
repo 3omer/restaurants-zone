@@ -11,11 +11,31 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
+    fb_id = Column(Integer, unique=True)
     name = Column(String(50), nullable=False)
     email = Column(String(50), nullable=False)
     picture = Column(String, nullable=False)
     time_joined = Column(DateTime(timezone=True), server_default=func.now())
 
+    def __init__(self, name, email, fb_id, picture):
+        self.name = name
+        self.email = email
+        self.picture = picture
+        self.fb_id = fb_id
+
+   def save(self):
+       s = get_db()
+       s.add(self)
+       s.commit()
+   
+    @staticmethod
+    def get_all():
+        return get_db().query(User).all()
+
+    @staticmethod
+    def get_by_id(id):
+        return get_db().query(User).one_or_none()
+    
     @property
     def serialize(self):
         return {
@@ -26,13 +46,6 @@ class User(Base):
             'joined': self.time_joined
         }
 
-    @staticmethod
-    def get_all():
-        return get_db().query(User).all()
-
-    @staticmethod
-    def get_by_id(id):
-        return get_db().query(User).one_or_none()
 
 class Restaurant(Base):
     __tablename__ = 'restaurant'
