@@ -37,17 +37,21 @@ class FaceBookOauthSession(OAuth2Session):
         r = self.get(_INSPECT_TOKEN_URL, input_token=input_token, access_token=app_token).json()
         pass
     
-    def profile(self):
+    def user_info(self):
+        '''get user profile info
+        return: dict : keys: facebook_id, picture, email, access_token
         '''
-        return a dict object:
-        keys: facebook_id, name, email,piture all string
-        '''
-        profile = self.get(_PROFILE_URL).json()
-        profile['facebook_id'] = int(profile['id'])
-        profile['picture'] = profile.get('picture').get('data').get('url')
-        # TODO : add 'access_token' key to profile dict 
-        # profile['access_token'] = self.token
-        return profile
+        info = {}
+        res = self.get(_PROFILE_URL).json()
+        if 'error' in res:
+            return res
+        else:
+            info['facebook_id'] = int(res.get('id'))
+            info['email'] = res.get('email')
+            info['name'] = res.get('name')
+            info['picture'] = res.get('picture').get('data').get('url')
+            info['access_token'] = self.token.get('access_token')
+            return info
 
     def revoke(self):
         return self.delete(_REVOKE_URL) 

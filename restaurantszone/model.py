@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, DateTime, desc
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from restaurantszone.db import get_db
@@ -27,14 +27,19 @@ class User(Base):
         s = get_db()
         s.add(self)
         s.commit()
+      
+    def delete(self):
+        ses = get_db()
+        ses.delete(self)
+        ses.commit()
    
     @staticmethod
     def get_all():
         return get_db().query(User).all()
 
-    @staticmethod
-    def get_by_id(id):
-        return get_db().query(User).one_or_none()
+    @classmethod
+    def get_by_id(cls, facebook_id):
+        return get_db().query(User).filter(cls.fb_id == facebook_id).one_or_none()
     
     @property
     def serialize(self):
@@ -42,6 +47,7 @@ class User(Base):
             'id': self.id,
             'name': self.name,
             'email': self.email,
+            'fb_id': self.fb_id,
             'picture': self.picture,
             'joined': self.time_joined
         }
@@ -52,7 +58,7 @@ class Restaurant(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.fb_id'))
     user = relationship(User)
 
     def __init__(self, name, user_id):
@@ -67,15 +73,24 @@ class Restaurant(Base):
             'name': self.name
         }
 
+    @property
+    def menu_length(self):
+        return len(MenuItem.get_restaurant_menu(self.id))
+
     def save(self):
         ses = get_db()
         ses.add(self)
         ses.commit()
         
+    def delete(self):
+        ses = get_db()
+        ses.delete(self)
+        ses.commit()
 
+    
     @classmethod
     def get_all(cls):
-        return get_db().query(Restaurant).order_by(cls.id).all()
+        return get_db().query(Restaurant).order_by(cls.id.desc()).all()
 
     @staticmethod
     def get_by_id(id):
@@ -91,10 +106,29 @@ class MenuItem(Base):
     description = Column(String(250))
     price = Column(String(8))
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.fb_id'))
 
     restaurant = relationship(Restaurant)
     user = relationship(User)
+
+    # def __init__(self, name, course, description, price, restaurant_id, user_id):
+    #     self.name = name
+    #     self.course = course
+    #     self.description = description
+    #     self.price = price
+    #     self.restaurant_id = restaurant_id
+    #     self.user_id = user_id
+
+    def save(self):
+        ses = get_db()
+        ses.add(self)
+        ses.commit()
+        
+    def delete(self):
+        ses = get_db()
+        ses.delete(self)
+        ses.commit()
+
 
     @property
     def serialize(self):
@@ -107,10 +141,14 @@ class MenuItem(Base):
             'price': self.price
         }
 
-    @staticmethod
-    def get_all():
-        return get_db().query(MenuItem).all()
+    @classmethod
+    def get_all(cls):
+        return get_db().query(cls).order_by(cls.id).all()
 
-    @staticmethod
-    def get_by_id(id):
-        return get_db().query(MenuItem).filter_by(id = id).one_or_none()
+    @classmethod
+    def get_by_id(cls, id):
+        return get_db().query(cls).filter_by(id = id).one_or_none()
+
+    @classmethod
+    def get_restaurant_menu(cls, id):
+        return get_db().query(cls).filter(MenuItem.restaurant_id == id).order_by(desc(cls.id)).all()

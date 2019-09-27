@@ -35,7 +35,7 @@ class FormHandler:
 
 
 class RestaurantFormHandler(FormHandler):
-    def __init__(self, name=None):
+    def __init__(self, name=''):
         super().__init__()
         self.name = _Input(name)
 
