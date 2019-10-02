@@ -10,10 +10,9 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'restaurantsmenu-test.db'), 
+        DATABASE=os.path.join(app.instance_path, 'restaurantsmenu.db'), 
     )
 
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
     
     if test_config is None:
         # load instance configs
@@ -21,7 +20,9 @@ def create_app(test_config=None):
 
     else:
         app.config.from_mapping(test_config)
-
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = "1"
+    
+    
     try:
         os.makedirs(app.instance_path)
     except OSError as identifier:
