@@ -7,5 +7,4 @@ __pycache__
 *.db
 fb-oauth-info.txt
 client_secret.json
-facebook_credintials.py
 restaurantszone/old.py
