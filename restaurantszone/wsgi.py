@@ -1,2 +1,2 @@
-from restaurantszone import create_app()
+from restaurantszone import create_app
 app = create_app()
