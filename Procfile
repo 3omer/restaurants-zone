@@ -1,1 +1,1 @@
-web: gunicorn restaurantszone.wsgi:app
+web: gunicorn restaurantszone.wsgi
