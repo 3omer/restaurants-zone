@@ -1,1 +1,1 @@
-web: gunicorn restaurantszone.create_app() --log-file -
+web: gunicorn restaurantszone.create_app()
