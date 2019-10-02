@@ -1,1 +1,1 @@
-web: gunicorn restaurantszone.create_app()
+web: gunicorn 'restaurantszone.create_app()'
