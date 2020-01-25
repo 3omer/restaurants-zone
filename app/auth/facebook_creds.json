@@ -1,0 +1,11 @@
+{
+  "CLIENT_ID": "772307689851473",
+  "CLIENT_SECRET": "2f469d49c4f122325a80676a2a728d02",
+  "APP_TOKEN": "772307689851473|NknYlG2yJGHF_ORwzYJhLyGheRQ",
+  "g_token": {
+    "access_token": "EAAKZBaOWCylEBAA38wdtpNiv2vrrCbG9dZAXWOjmp8V3d2arSrdDNsLNfhZADrJNY5brxAZC8fcem2JC4llwSAZBohfVan62cn4B4LZA6qMfeGABdMMiYdOrjcZAenVrkeZAFhYtoZAZAAl0RSSaKUe64mw75IvCvUDKxH54A8PX6OOgZDZD",
+    "expires_at": 1573176079.520061,
+    "expires_in": 5171594,
+    "token_type": "bearer"
+  }
+}

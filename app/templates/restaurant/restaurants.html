@@ -1,0 +1,119 @@
+<!-- dependencies -->
+{% extends 'base_temp.html' %}
+
+
+{% block content %}
+<section class="restaurants-list my-3">
+    <div class="container px-0 px-2">
+        <div class=" bg-white p-2 sticky-top">
+            <div class="options d-flex w-100 justify-content-between shadow-sm p-2">
+                
+                <!-- new option only available for logged in users -->
+                <button class="btn btn-sm btn-primary" id="addRestaurant" data-toggle="modal" data-target="#restaurantModal"
+                    data-action="{{url_for('restaurant.newRestaurant')}}" data-title="Create new Restaurant" {% if not g.user %} disabled {% endif %}>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22" width="20" height="20">
+                            <rect width="3" height="11" x="6.5" y="5.5" fill="#ffffff" />
+                            <rect width="11" height="3" x="2.5" y="9.5" fill="#ffffff" />
+                        </svg>
+                    </span>
+                    <span class="p-1">new</span>
+                </button>
+                
+                <button class="btn btn-sm btn-secondary">sort</button>
+            </div>
+        </div>
+        {% block fb %} {{super()}} {% endblock fb %}
+        <div class="row mx-0 mx-md-2">
+            {% for r in restaurants %}
+            <div class="col-sm-6 mb-3">
+                <div class="card">
+                    <img class="card-img-top" src=""
+                        data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text={{r.name}}"
+                        data-holder-rendered="true" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title badge badge-dark text-uppercase">{{r.name}}</h5>
+                        <p class="card-text">has <span class="badge badge-info badge-pill">{{r.menu_length}}</span> menu item</p>
+                    </div>
+                    <div class="card-footer d-flex flex-column flex-sm-row justify-content-between">
+                        <a class="btn btn-sm btn-primary px-4"
+                            href="{{url_for('menu.restaurantMenu', restaurant_id=r.id)}}">
+                            Go
+                        </a>
+                        {#{% if g.user.fb_id and r.user_id %}#}
+                        {% if g.user and g.is_owner(r.user_id) %}
+                        <!-- options should be available only for the owner -->
+                        <div class="btn-group btn-group-sm mt-1 mt-sm-0">
+                            <button class="btn btn-secondary" id="editRestaurant" data-toggle="modal"
+                                data-target="#restaurantModal"
+                                data-action="{{url_for('restaurant.editRestaurant', restaurant_id=r.id)}}"
+                                data-title="Edit {{r.name}}" data-name="{{r.name}}">
+                                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22">
+                                    <path fill="#ffffff90"
+                                        d="M1.204 14.796v3h3l8-8-3-3-8 8zm3 2h-2v-2h1v1h1v1zm10.3-9.3l-1.3 1.3-3-3 1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z">
+                                    </path>
+                                </svg><span class="p-1">edit</span>
+                            </button>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+                                data-name="{{r.name}}"
+                                data-action="{{url_for('restaurant.deleteRestaurant', restaurant_id=r.id)}}">
+                                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 22">
+                                    <path fill="#ffffff90"
+                                        d="M10.856 5.286V4.142C10.856 3.458 10.4 3 9.714 3H6.286c-.686 0-1.144.458-1.144 1.142v1.144H1.714v1.142h1.142v11.43C2.856 18.542 3.314 19 4 19h8c.686 0 1.142-.458 1.142-1.142V6.428h1.144V5.286h-3.43zm-4.57 10.286H5.142V8.714h1.144v6.858zm0-11.43h3.428v1.144H6.286V4.142zm2.286 11.43H7.428V8.714h1.144v6.858zm2.284 0H9.714V8.714h1.142v6.858z" />
+                                </svg> <span class="p-1">delete</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- new/edit  restaurant form modal -->
+<div class="modal fade" id="restaurantModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+                <h5 class="modal-title">New Restaurant</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="restaurantForm" method="POST">
+                    <div class="form-group">
+                        <label for="nameInput">Restaurant Name</label>
+                        <input type="text" class="form-control" id="nameInput" name="name"
+                            placeholder="Enter restaurant name">
+                    </div>
+                    <div class="border-top p-2">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#restaurantModal').on('show.bs.modal', function (event) {
+            // get the modal title from the triggering button
+            var btn = $(event.relatedTarget);
+            console.log('Button ' + btn.attr('id') + ' clicked');
+            var modal = $(this);
+            modal.find('.modal-title').text(btn.data('title'));
+            var form = modal.find('#restaurantForm');
+            form.attr('action', btn.data('action'));
+            if (btn.attr('id') === 'editRestaurant') {
+                // get item details from the DOM
+                var name = btn.data('name');
+                // populate the form with data
+                form.find('#nameInput').attr('value', name);
+                form.find('[type=submit]').text('Save Changes');
+            }
+        })
+    </script>
+</div>
+{% endblock %}
