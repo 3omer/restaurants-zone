@@ -19,6 +19,8 @@ def load_logged_user():
 
 @bp.route('/facebook/login', methods=['GET'])
 def facebookAuth():
+    flash('Sorry.Facebook Log in is not available now!', category='info')
+    return redirect('/')
     # make sure to clean any previous login session
     # delete_user_from_session()
     # logged in users shouldn't run this route
