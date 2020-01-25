@@ -3,7 +3,7 @@
 __pycache__
 /junks
 *.pyc
-*.db
+
 fb-oauth-info.txt
 client_secret.json
 restaurantszone/old.py
