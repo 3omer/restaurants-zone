@@ -1,4 +1,10 @@
-from .facebook_credintials import CLIENT_ID, CLIENT_SECRET, APP_TOKEN
+import json
+from requests_oauthlib import OAuth2Session
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
+
+with open('app/auth/facebook_creds.json') as f:
+    creds = json.load(f)
+
 _AUTHORIZATION_BASE_URI = 'https://www.facebook.com/v4.0/dialog/oauth?'
 _TOKEN_URL = 'https://graph.facebook.com/v4.0/oauth/access_token?'
 _REDIRECT_URI = 'http://localhost:8000/auth/facebook/callback'
@@ -12,22 +18,20 @@ _INSPECT_TOKEN_URL = 'https://graph.facebook.com/debug_token?'
 
 _PROFILE_URL = 'https://graph.facebook.com/me?fields=name,email,picture'
 
-from requests_oauthlib import OAuth2Session
-from requests_oauthlib.compliance_fixes import facebook_compliance_fix
-from . import facebook_credintials
+
 
 class FaceBookOauthSession(OAuth2Session):
-    def __init__(self, client_id=CLIENT_ID, scope=_SCOPE, redirect_uri=_REDIRECT_URI, token=None, state=None):
-            super().__init__(client_id=client_id, scope=scope, redirect_uri=redirect_uri, token=token, state=state)
+    def __init__(self, client_id=creds['CLIENT_ID'], scope=_SCOPE, redirect_uri=_REDIRECT_URI, token=None, state=None):
+            super().__init__(client_id=cred['CLIENT_ID'], scope=scope, redirect_uri=redirect_uri, token=token, state=state)
             self = facebook_compliance_fix(self)
 
     def authorization_url(self):
         return OAuth2Session.authorization_url(self, _AUTHORIZATION_BASE_URI)
 
-    def fetch_token(self, token_url=_TOKEN_URL, code=None, authorization_response=None, body='', auth=None, username=None, password=None, method='POST', timeout=None, headers=None, verify=True, proxies=None, include_client_id=None, client_secret=CLIENT_SECRET, **kwargs):
+    def fetch_token(self, token_url=_TOKEN_URL, code=None, authorization_response=None, body='', auth=None, username=None, password=None, method='POST', timeout=None, headers=None, verify=True, proxies=None, include_client_id=None, client_secret=creds['CLIENT_SECRET'], **kwargs):
         return OAuth2Session.fetch_token(self, token_url, authorization_response=authorization_response, client_secret=client_secret)
 
-    def inspect_token(self, input_token, app_token=APP_TOKEN):
+    def inspect_token(self, input_token, app_token=creds['APP_TOKEN']):
         '''
         inspect token info : param : 
         input_token: token to inspect
